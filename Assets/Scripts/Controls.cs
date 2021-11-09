@@ -27,7 +27,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Backwards"",
+                    ""name"": ""Backward"",
                     ""type"": ""Button"",
                     ""id"": ""7020a48e-efaf-4b54-99ac-599a4168e68c"",
                     ""expectedControlType"": ""Button"",
@@ -63,8 +63,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""c44662e8-a33c-4034-b756-0eec04b4d225"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
-                    ""interactions"": """",
+                    ""path"": ""<XInputController>/rightTrigger"",
+                    ""interactions"": ""Hold(duration=0.1,pressPoint=0.8)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Forward"",
@@ -74,18 +74,18 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""11f5c598-32a0-4f5e-b634-a14cc508af1e"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""path"": ""<XInputController>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Backwards"",
+                    ""action"": ""Backward"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""2e57d0b3-85b3-4d81-88d5-c3f3aa316bf5"",
-                    ""path"": ""<Gamepad>/rightStick/right"",
+                    ""path"": ""<XInputController>/rightStick/right"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -96,7 +96,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b085c377-97ac-4f65-b088-3a7961eb15b4"",
-                    ""path"": ""<Gamepad>/rightStick/left"",
+                    ""path"": ""<XInputController>/rightStick/left"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -107,8 +107,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b80ae83a-5527-4f42-abbf-8f4bebd7854f"",
-                    ""path"": ""<Gamepad>/buttonEast"",
-                    ""interactions"": """",
+                    ""path"": ""<XInputController>/buttonEast"",
+                    ""interactions"": ""Hold"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Drift"",
@@ -123,7 +123,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         // Gameplay
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_Forward = m_Gameplay.FindAction("Forward", throwIfNotFound: true);
-        m_Gameplay_Backwards = m_Gameplay.FindAction("Backwards", throwIfNotFound: true);
+        m_Gameplay_Backward = m_Gameplay.FindAction("Backward", throwIfNotFound: true);
         m_Gameplay_TurnRight = m_Gameplay.FindAction("TurnRight", throwIfNotFound: true);
         m_Gameplay_TurnLeft = m_Gameplay.FindAction("TurnLeft", throwIfNotFound: true);
         m_Gameplay_Drift = m_Gameplay.FindAction("Drift", throwIfNotFound: true);
@@ -177,7 +177,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Gameplay;
     private IGameplayActions m_GameplayActionsCallbackInterface;
     private readonly InputAction m_Gameplay_Forward;
-    private readonly InputAction m_Gameplay_Backwards;
+    private readonly InputAction m_Gameplay_Backward;
     private readonly InputAction m_Gameplay_TurnRight;
     private readonly InputAction m_Gameplay_TurnLeft;
     private readonly InputAction m_Gameplay_Drift;
@@ -186,7 +186,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         private @PlayerControls m_Wrapper;
         public GameplayActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Forward => m_Wrapper.m_Gameplay_Forward;
-        public InputAction @Backwards => m_Wrapper.m_Gameplay_Backwards;
+        public InputAction @Backward => m_Wrapper.m_Gameplay_Backward;
         public InputAction @TurnRight => m_Wrapper.m_Gameplay_TurnRight;
         public InputAction @TurnLeft => m_Wrapper.m_Gameplay_TurnLeft;
         public InputAction @Drift => m_Wrapper.m_Gameplay_Drift;
@@ -202,9 +202,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Forward.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnForward;
                 @Forward.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnForward;
                 @Forward.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnForward;
-                @Backwards.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBackwards;
-                @Backwards.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBackwards;
-                @Backwards.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBackwards;
+                @Backward.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBackward;
+                @Backward.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBackward;
+                @Backward.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBackward;
                 @TurnRight.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTurnRight;
                 @TurnRight.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTurnRight;
                 @TurnRight.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTurnRight;
@@ -221,9 +221,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Forward.started += instance.OnForward;
                 @Forward.performed += instance.OnForward;
                 @Forward.canceled += instance.OnForward;
-                @Backwards.started += instance.OnBackwards;
-                @Backwards.performed += instance.OnBackwards;
-                @Backwards.canceled += instance.OnBackwards;
+                @Backward.started += instance.OnBackward;
+                @Backward.performed += instance.OnBackward;
+                @Backward.canceled += instance.OnBackward;
                 @TurnRight.started += instance.OnTurnRight;
                 @TurnRight.performed += instance.OnTurnRight;
                 @TurnRight.canceled += instance.OnTurnRight;
@@ -240,7 +240,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     public interface IGameplayActions
     {
         void OnForward(InputAction.CallbackContext context);
-        void OnBackwards(InputAction.CallbackContext context);
+        void OnBackward(InputAction.CallbackContext context);
         void OnTurnRight(InputAction.CallbackContext context);
         void OnTurnLeft(InputAction.CallbackContext context);
         void OnDrift(InputAction.CallbackContext context);
