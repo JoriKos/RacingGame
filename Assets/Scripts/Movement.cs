@@ -7,11 +7,13 @@ public class Movement : MonoBehaviour
 {
     [SerializeField] private PlayerControls controls;
     [SerializeField] private int rotationSpeed;
-    [SerializeField] private int moveSpeed;
+    [SerializeField] private float maxMoveSpeed, maxReverseSpeed, moveSpeed;
     private bool isMovingForward, isMovingBackwards, isDrifting, isTurningLeft, isTurningRight;
+    private Rigidbody rb;
 
     private void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         controls = new PlayerControls();
         controls.Gameplay.Forward.started += ctx => Forward(true);
         controls.Gameplay.Forward.canceled += ctx => Forward(false);
@@ -23,19 +25,68 @@ public class Movement : MonoBehaviour
         controls.Gameplay.TurnLeft.started += ctx => TurnLeft(true);
         controls.Gameplay.TurnLeft.canceled += ctx => TurnLeft(false);
 
-        controls.Gameplay.Drift.performed += ctx => Drift();
+        controls.Gameplay.Drift.started += ctx => Drift(true);
+        controls.Gameplay.Drift.canceled += ctx => Drift(false);
+    }
+
+    private void Update()
+    {
+        if (rb.velocity.x > maxMoveSpeed && isMovingForward)
+        {
+            rb.velocity = new Vector3(maxMoveSpeed, rb.velocity.y, rb.velocity.z);
+        }
+
+        if (rb.velocity.x < maxReverseSpeed && isMovingForward)
+        {
+            rb.velocity = new Vector3(-maxMoveSpeed, rb.velocity.y, rb.velocity.z);
+        }
+
+        if (rb.velocity.x < maxReverseSpeed && isMovingBackwards)
+        {
+            rb.velocity = new Vector3(maxReverseSpeed, rb.velocity.y, rb.velocity.z);
+        }
+
+        if (!isMovingForward)
+        {
+            rb.velocity -= new Vector3(15f, rb.velocity.y, rb.velocity.z) * Time.deltaTime;
+
+            if (rb.velocity.x < 0 && !isMovingBackwards)
+            {
+                rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.z);
+            }
+        }
+
+        if (moveSpeed > maxMoveSpeed)
+        {
+            moveSpeed = maxMoveSpeed;
+        }
+        
+        if (moveSpeed < maxReverseSpeed)
+        {
+            moveSpeed = maxReverseSpeed;
+        }
     }
 
     private void FixedUpdate()
     {
         if (isMovingForward)
         {
-            transform.Translate(new Vector3(0, 0, 1) * moveSpeed * Time.deltaTime, Space.Self);
+            transform.Translate(new Vector3(1, 0, 0) * moveSpeed * Time.deltaTime, Space.Self);
+            
+            if (isTurningRight)
+            {
+                rb.AddForce(this.transform.right * moveSpeed * Time.deltaTime);
+            }
+            
+            if (isTurningLeft)
+            {
+                rb.AddForce(-this.transform.right * moveSpeed * Time.deltaTime);
+            }
         }
         
         if (isMovingBackwards)
         {
-            transform.Translate(new Vector3(0, 0, -1) * moveSpeed * Time.deltaTime, Space.Self);
+            rb.AddForce(-this.transform.forward * moveSpeed * Time.deltaTime);
         }
 
         if (isTurningRight)
@@ -102,9 +153,17 @@ public class Movement : MonoBehaviour
     }
     
 
-    private void Drift()
+    private void Drift(bool isActivated)
     {
+        if (isActivated)
+        {
+            isDrifting = true;
+        }
 
+        if (!isActivated)
+        {
+            isDrifting = false;
+        }
     }
 
     private void OnEnable()
@@ -114,5 +173,10 @@ public class Movement : MonoBehaviour
     private void OnDisable()
     {
         controls.Gameplay.Disable();
+    }
+
+    public float GetVelocity()
+    {
+        return rb.velocity.x;
     }
 }
