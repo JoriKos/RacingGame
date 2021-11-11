@@ -48,11 +48,16 @@ public class Movement : MonoBehaviour
 
         if (!isMovingForward)
         {
-            rb.velocity -= new Vector3(15f, rb.velocity.y, rb.velocity.z) * Time.deltaTime;
+            rb.velocity -= new Vector3(15f, rb.velocity.y, 15f) * Time.deltaTime;
 
             if (rb.velocity.x < 0 && !isMovingBackwards)
             {
                 rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.z);
+            }
+
+            if (rb.velocity.z < 0)
+            {
+                rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, 0);
             }
         }
 
@@ -71,7 +76,7 @@ public class Movement : MonoBehaviour
     {
         if (isMovingForward)
         {
-            transform.Translate(new Vector3(1, 0, 0) * moveSpeed * Time.deltaTime, Space.Self);
+            //transform.Translate(new Vector3(0, 0, 1) * moveSpeed * Time.deltaTime, Space.Self);
             
             if (isTurningRight)
             {
@@ -86,7 +91,7 @@ public class Movement : MonoBehaviour
         
         if (isMovingBackwards)
         {
-            rb.AddForce(-this.transform.forward * moveSpeed * Time.deltaTime);
+            rb.AddForce(new Vector3(0, 0, -1) * moveSpeed * Time.deltaTime);
         }
 
         if (isTurningRight)
