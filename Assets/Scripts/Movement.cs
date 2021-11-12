@@ -91,7 +91,8 @@ public class Movement : MonoBehaviour
         
         if (isMovingBackwards)
         {
-            rb.AddForce(new Vector3(0, 0, -1) * moveSpeed * Time.deltaTime);
+            //rb.AddForce(new Vector3(0, 0, -1) * moveSpeed * Time.deltaTime);
+            transform.Translate(new Vector3(0, 0, -1) * moveSpeed * Time.deltaTime);
         }
 
         if (isTurningRight)
