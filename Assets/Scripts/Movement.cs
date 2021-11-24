@@ -18,6 +18,8 @@ public class Movement : MonoBehaviour
         startTimer = false;
         timer = 0;
         boostedSpeed = 0;
+        //The following is (the name of a Dying Light DLC, but also) controls related stuff. controls.ActionMapName.Actions
+        //Gives a bool to determine whether or not the action has been performed or has stopped performing. The "Hold" interaction doesn't really work for this kind of input for some reason.
         controls = new PlayerControls();
         controls.Gameplay.Forward.started += ctx => Forward(true);
         controls.Gameplay.Forward.canceled += ctx => Forward(false);
@@ -40,7 +42,7 @@ public class Movement : MonoBehaviour
             timer += Time.deltaTime;
         }
 
-        if (timer > 1.5f)
+        if (timer > 1.5f) //If timer reaches time, remove speedboost modifiers
         {
             boostedSpeed -= speedBoostModifier;
             maxMoveSpeed -= speedBoostModifier;
@@ -49,7 +51,7 @@ public class Movement : MonoBehaviour
             timer = 0;
         }
 
-        if (isMovingForward && !isMovingBackwards)
+        if (isMovingForward && !isMovingBackwards) //If holding forwards button, but not backwards button
         {
             moveSpeed += Time.deltaTime;
 
@@ -59,7 +61,7 @@ public class Movement : MonoBehaviour
             }
         }
 
-        if (isMovingBackwards && !isMovingForward)
+        if (isMovingBackwards && !isMovingForward) //If holding backwards button, but not forwards button. Add speed + speed limiter.
         {
             moveSpeed -= Time.deltaTime;
 
@@ -69,12 +71,12 @@ public class Movement : MonoBehaviour
             }
         }
 
-        if (moveSpeed > 0 && !isMovingForward && !isMovingBackwards)
+        if (moveSpeed > 0 && !isMovingForward && !isMovingBackwards) //When going forward, but neither button is pressed, remove speed over time.
         {
             moveSpeed -= Time.deltaTime;
         }
 
-        if (moveSpeed < 0 && !isMovingForward && !isMovingBackwards)
+        if (moveSpeed < 0 && !isMovingForward && !isMovingBackwards) //When going backwards, but neither button is pressed, remove speed over time.
         {
             moveSpeed += Time.deltaTime;
         }
@@ -82,8 +84,9 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        transform.Translate(Vector3.forward * (moveSpeed + boostedSpeed), Space.Self);
+        transform.Translate(Vector3.forward * (moveSpeed + boostedSpeed), Space.Self); //Constantly adds forward moment, values are added once buttons are pressed.
 
+        //Turning left/right
         if (isTurningRight)
         {
             transform.Rotate(new Vector3(0, 1, 0) * rotationSpeed * Time.deltaTime, Space.World);
@@ -95,6 +98,7 @@ public class Movement : MonoBehaviour
         }
     }
 
+    //Control bindings
     private void Forward(bool isActivated)
     {
         if (isActivated)
@@ -161,6 +165,7 @@ public class Movement : MonoBehaviour
         }
     }
 
+    //Function is called when object is enabled/disabled. Enables/disabled controls.
     private void OnEnable()
     {
         controls.Gameplay.Enable();
@@ -170,9 +175,10 @@ public class Movement : MonoBehaviour
         controls.Gameplay.Disable();
     }
 
-    private void OnCollisionEnter(Collision col)
+    //If speedboost is hit
+    private void OnTriggerEnter(Collider col)
     {
-        if(col.gameObject.tag == "Speedboost")
+        if (col.gameObject.tag == "Speedboost")
         {
             boostedSpeed += speedBoostModifier;
             maxMoveSpeed += speedBoostModifier;
@@ -180,7 +186,6 @@ public class Movement : MonoBehaviour
             cam.fieldOfView += 15;
         }
     }
-
     public float GetVelocity()
     {
         return moveSpeed;

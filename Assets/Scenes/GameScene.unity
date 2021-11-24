@@ -233,6 +233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64f9badff47cc03468c4809919e3a213, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
   rotationSpeed: 100
   maxMoveSpeed: 5
   maxReverseSpeed: -3
@@ -936,6 +937,10 @@ PrefabInstance:
     - target: {fileID: 6964867093453554544, guid: 3b6c3479f1cf2d94dbc654b1505c791b, type: 3}
       propertyPath: m_Name
       value: SpeedCube
+      objectReference: {fileID: 0}
+    - target: {fileID: 8543790972553656094, guid: 3b6c3479f1cf2d94dbc654b1505c791b, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b6c3479f1cf2d94dbc654b1505c791b, type: 3}
