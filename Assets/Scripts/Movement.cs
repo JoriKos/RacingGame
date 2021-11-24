@@ -5,16 +5,19 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    [SerializeField] private Camera cam;
     [SerializeField] private PlayerControls controls;
     [SerializeField] private int rotationSpeed;
-    [SerializeField] private float maxMoveSpeed, maxReverseSpeed;
-    private float moveSpeed;
-    private bool isMovingForward, isMovingBackwards, isDrifting, isTurningLeft, isTurningRight;
-    private Rigidbody rb;
+    [SerializeField] private float maxMoveSpeed, maxReverseSpeed, speedBoostModifier;
+    private float moveSpeed, boostedSpeed, timer;
+    private bool isMovingForward, isMovingBackwards, isDrifting, isTurningLeft, isTurningRight, startTimer;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        cam = FindObjectOfType<Camera>();
+        startTimer = false;
+        timer = 0;
+        boostedSpeed = 0;
         controls = new PlayerControls();
         controls.Gameplay.Forward.started += ctx => Forward(true);
         controls.Gameplay.Forward.canceled += ctx => Forward(false);
@@ -32,6 +35,20 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
+        if (startTimer)
+        {
+            timer += Time.deltaTime;
+        }
+
+        if (timer > 1.5f)
+        {
+            boostedSpeed -= speedBoostModifier;
+            maxMoveSpeed -= speedBoostModifier;
+            startTimer = false;
+            cam.fieldOfView -= 15;
+            timer = 0;
+        }
+
         if (isMovingForward && !isMovingBackwards)
         {
             moveSpeed += Time.deltaTime;
@@ -39,6 +56,16 @@ public class Movement : MonoBehaviour
             if (moveSpeed > maxMoveSpeed)
             {
                 moveSpeed = maxMoveSpeed;
+            }
+        }
+
+        if (isMovingBackwards && !isMovingForward)
+        {
+            moveSpeed -= Time.deltaTime;
+
+            if (moveSpeed < maxReverseSpeed)
+            {
+                moveSpeed = maxReverseSpeed;
             }
         }
 
@@ -51,21 +78,11 @@ public class Movement : MonoBehaviour
         {
             moveSpeed += Time.deltaTime;
         }
-        
-        if (isMovingBackwards && !isMovingForward)
-        {
-            moveSpeed -= Time.deltaTime;
-
-            if (moveSpeed < maxReverseSpeed)
-            {
-                moveSpeed = maxReverseSpeed;
-            }
-        }
     }
 
     private void FixedUpdate()
     {
-        transform.Translate(Vector3.forward * moveSpeed, Space.Self);
+        transform.Translate(Vector3.forward * (moveSpeed + boostedSpeed), Space.Self);
 
         if (isTurningRight)
         {
@@ -153,8 +170,19 @@ public class Movement : MonoBehaviour
         controls.Gameplay.Disable();
     }
 
-    public Vector3 GetVelocity()
+    private void OnCollisionEnter(Collision col)
     {
-        return rb.velocity;
+        if(col.gameObject.tag == "Speedboost")
+        {
+            boostedSpeed += speedBoostModifier;
+            maxMoveSpeed += speedBoostModifier;
+            startTimer = true;
+            cam.fieldOfView += 15;
+        }
+    }
+
+    public float GetVelocity()
+    {
+        return moveSpeed;
     }
 }
