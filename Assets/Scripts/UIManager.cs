@@ -7,7 +7,7 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] private Movement player;
     [SerializeField] private TextMeshProUGUI velocityText;
-    private float velocity;
+    private Vector3 velocity;
     private int velocityInt;
 
     private void Awake()
@@ -19,7 +19,6 @@ public class UIManager : MonoBehaviour
     void Update()
     {
         velocity = player.GetVelocity();
-        velocityInt = Mathf.RoundToInt(velocity);
         velocityText.text = velocityInt.ToString();
     }
 }

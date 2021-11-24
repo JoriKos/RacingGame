@@ -7,7 +7,8 @@ public class Movement : MonoBehaviour
 {
     [SerializeField] private PlayerControls controls;
     [SerializeField] private int rotationSpeed;
-    [SerializeField] private float maxMoveSpeed, maxReverseSpeed, moveSpeed;
+    [SerializeField] private float maxMoveSpeed, maxReverseSpeed;
+    private float moveSpeed;
     private bool isMovingForward, isMovingBackwards, isDrifting, isTurningLeft, isTurningRight;
     private Rigidbody rb;
 
@@ -31,28 +32,40 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        if (moveSpeed > maxMoveSpeed)
+        if (isMovingForward && !isMovingBackwards)
         {
-            moveSpeed = maxMoveSpeed;
+            moveSpeed += Time.deltaTime;
+
+            if (moveSpeed > maxMoveSpeed)
+            {
+                moveSpeed = maxMoveSpeed;
+            }
+        }
+
+        if (moveSpeed > 0 && !isMovingForward && !isMovingBackwards)
+        {
+            moveSpeed -= Time.deltaTime;
+        }
+
+        if (moveSpeed < 0 && !isMovingForward && !isMovingBackwards)
+        {
+            moveSpeed += Time.deltaTime;
         }
         
-        if (moveSpeed < maxReverseSpeed)
+        if (isMovingBackwards && !isMovingForward)
         {
-            moveSpeed = maxReverseSpeed;
+            moveSpeed -= Time.deltaTime;
+
+            if (moveSpeed < maxReverseSpeed)
+            {
+                moveSpeed = maxReverseSpeed;
+            }
         }
     }
 
     private void FixedUpdate()
     {
-        if (isMovingForward)
-        {
-            rb.AddRelativeForce(new Vector3(0, 0, 1) * (moveSpeed * 10) * Time.deltaTime);
-        }
-        
-        if (isMovingBackwards)
-        {
-            rb.AddRelativeForce(new Vector3(0, 0, -1) * (moveSpeed * 10) * Time.deltaTime);
-        }
+        transform.Translate(Vector3.forward * moveSpeed, Space.Self);
 
         if (isTurningRight)
         {
@@ -140,8 +153,8 @@ public class Movement : MonoBehaviour
         controls.Gameplay.Disable();
     }
 
-    public float GetVelocity()
+    public Vector3 GetVelocity()
     {
-        return rb.velocity.x;
+        return rb.velocity;
     }
 }
