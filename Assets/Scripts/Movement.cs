@@ -31,36 +31,6 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        if (rb.velocity.x > maxMoveSpeed && isMovingForward)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, maxMoveSpeed);
-        }
-
-        if (rb.velocity.x < maxReverseSpeed && isMovingForward)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, -maxMoveSpeed);
-        }
-
-        if (rb.velocity.x < maxReverseSpeed && isMovingBackwards)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, maxReverseSpeed);
-        }
-
-        if (!isMovingForward)
-        {
-            rb.velocity -= new Vector3(15f, rb.velocity.y, 15f) * Time.deltaTime;
-
-            if (rb.velocity.x < 0 && !isMovingBackwards)
-            {
-                rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.z);
-            }
-
-            if (rb.velocity.z < 0)
-            {
-                rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, 0);
-            }
-        }
-
         if (moveSpeed > maxMoveSpeed)
         {
             moveSpeed = maxMoveSpeed;
@@ -76,24 +46,12 @@ public class Movement : MonoBehaviour
     {
         if (isMovingForward)
         {
-            //transform.Translate(new Vector3(0, 0, 1) * moveSpeed * Time.deltaTime, Space.Self);
             rb.AddRelativeForce(new Vector3(0, 0, 1) * (moveSpeed * 10) * Time.deltaTime);
-
-            /*if (isTurningRight)
-            {
-                rb.AddForce(this.transform.right * moveSpeed * Time.deltaTime);
-            }
-            
-            if (isTurningLeft)
-            {
-                rb.AddForce(-this.transform.right * moveSpeed * Time.deltaTime);
-            }*/
         }
         
         if (isMovingBackwards)
         {
-            //rb.AddForce(new Vector3(0, 0, -1) * moveSpeed * Time.deltaTime);
-            transform.Translate(new Vector3(0, 0, -1) * moveSpeed * Time.deltaTime);
+            rb.AddRelativeForce(new Vector3(0, 0, -1) * (moveSpeed * 10) * Time.deltaTime);
         }
 
         if (isTurningRight)
