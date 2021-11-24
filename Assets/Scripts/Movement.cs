@@ -33,17 +33,17 @@ public class Movement : MonoBehaviour
     {
         if (rb.velocity.x > maxMoveSpeed && isMovingForward)
         {
-            rb.velocity = new Vector3(maxMoveSpeed, rb.velocity.y, rb.velocity.z);
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, maxMoveSpeed);
         }
 
         if (rb.velocity.x < maxReverseSpeed && isMovingForward)
         {
-            rb.velocity = new Vector3(-maxMoveSpeed, rb.velocity.y, rb.velocity.z);
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, -maxMoveSpeed);
         }
 
         if (rb.velocity.x < maxReverseSpeed && isMovingBackwards)
         {
-            rb.velocity = new Vector3(maxReverseSpeed, rb.velocity.y, rb.velocity.z);
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, maxReverseSpeed);
         }
 
         if (!isMovingForward)
@@ -77,8 +77,9 @@ public class Movement : MonoBehaviour
         if (isMovingForward)
         {
             //transform.Translate(new Vector3(0, 0, 1) * moveSpeed * Time.deltaTime, Space.Self);
-            
-            if (isTurningRight)
+            rb.AddRelativeForce(new Vector3(0, 0, 1) * (moveSpeed * 10) * Time.deltaTime);
+
+            /*if (isTurningRight)
             {
                 rb.AddForce(this.transform.right * moveSpeed * Time.deltaTime);
             }
@@ -86,7 +87,7 @@ public class Movement : MonoBehaviour
             if (isTurningLeft)
             {
                 rb.AddForce(-this.transform.right * moveSpeed * Time.deltaTime);
-            }
+            }*/
         }
         
         if (isMovingBackwards)
